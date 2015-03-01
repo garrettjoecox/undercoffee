@@ -1,5 +1,27 @@
 window._ = {}
 
+### Collections ###
+
+_.each = _.forEach = (collection, callback, context) ->
+  if Array.isArray collection
+    callback.call context, item, index, collection for item, index in collection
+  else
+    callback.call context, item, key, collection for key, item of collection
+
+### Arrays ###
+
+### Arrays ###
+
+### Functions ###
+
+### Objects ###
+
+### Cross Document ###
+
+### Utility ###
+
+### Chaining ###
+
 _.identity = (val) ->
   val
 
@@ -11,11 +33,6 @@ _.last = (array, n) ->
     return array
   if n? then array.slice array.length - n, array.length else array[array.length - 1]
 
-_.each = (collection, iterator) ->
-  if Array.isArray collection
-    iterator item, index, collection for item, index in collection
-  else
-    iterator item, key, collection for key, item of collection
 
 _.indexOf = (array, target) ->
   result = -1

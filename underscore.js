@@ -2,6 +2,49 @@
 (function() {
   window._ = {};
 
+
+  /* Collections */
+
+  _.each = _.forEach = function(collection, callback, context) {
+    var index, item, key, _i, _len, _results, _results1;
+    if (Array.isArray(collection)) {
+      _results = [];
+      for (index = _i = 0, _len = collection.length; _i < _len; index = ++_i) {
+        item = collection[index];
+        _results.push(callback.call(context, item, index, collection));
+      }
+      return _results;
+    } else {
+      _results1 = [];
+      for (key in collection) {
+        item = collection[key];
+        _results1.push(callback.call(context, item, key, collection));
+      }
+      return _results1;
+    }
+  };
+
+
+  /* Arrays */
+
+
+  /* Arrays */
+
+
+  /* Functions */
+
+
+  /* Objects */
+
+
+  /* Cross Document */
+
+
+  /* Utility */
+
+
+  /* Chaining */
+
   _.identity = function(val) {
     return val;
   };
@@ -22,25 +65,6 @@
       return array.slice(array.length - n, array.length);
     } else {
       return array[array.length - 1];
-    }
-  };
-
-  _.each = function(collection, iterator) {
-    var index, item, key, _i, _len, _results, _results1;
-    if (Array.isArray(collection)) {
-      _results = [];
-      for (index = _i = 0, _len = collection.length; _i < _len; index = ++_i) {
-        item = collection[index];
-        _results.push(iterator(item, index, collection));
-      }
-      return _results;
-    } else {
-      _results1 = [];
-      for (key in collection) {
-        item = collection[key];
-        _results1.push(iterator(item, key, collection));
-      }
-      return _results1;
     }
   };
 
