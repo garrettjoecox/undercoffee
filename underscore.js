@@ -24,30 +24,92 @@
     }
   };
 
-
-  /* Arrays */
-
-
-  /* Arrays */
-
-
-  /* Functions */
-
-
-  /* Objects */
-
-
-  /* Cross Document */
-
-
-  /* Utility */
-
-
-  /* Chaining */
-
-  _.identity = function(val) {
-    return val;
+  _.map = _.collect = function(collection, callback, context) {
+    var results;
+    results = [];
+    _.each(collection, function(item) {
+      return results.push(callback.call(context, item));
+    });
+    return results;
   };
+
+  _.reduce = _.foldl = function(collection, callback, accumulator, context) {
+    if (accumulator == null) {
+      accumulator = collection.shift();
+    }
+    _.each(collection, function(item) {
+      return accumulator = callback.call(context, accumulator, item);
+    });
+    return accumulator;
+  };
+
+  _.filter = _.select = function(collection, test) {
+    var results;
+    results = [];
+    _.each(collection, function(item) {
+      if (test(item)) {
+        return results.push(item);
+      }
+    });
+    return results;
+  };
+
+  _.reject = function(collection, test) {
+    return _.filter(collection, function(item) {
+      return !test(item);
+    });
+  };
+
+  _.pluck = function(collection, key) {
+    return _.map(collection, function(item) {
+      return item[key];
+    });
+  };
+
+  _.contains = function(collection, target) {
+    if (_.indexOf(collection, target) === -1) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  _.every = function(collection, iterator) {
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, function(accumulator, value) {
+      return accumulator && iterator(value);
+    }, true);
+  };
+
+  _.some = function(collection, iterator) {
+    iterator = iterator || _.identity;
+    return !_.every(collection, function(value) {
+      return !iterator(value);
+    });
+  };
+
+  _.shuffle = function(array) {
+    var ran, shuffled, used;
+    used = [];
+    while (used.length < array.length) {
+      ran = Math.floor(Math.random() * array.length);
+      if (!_.contains(used, ran)) {
+        used.push(ran);
+      }
+    }
+    shuffled = [];
+    _.each(used, function(item) {
+      return shuffled.push(array[item]);
+    });
+    if (shuffled.join() === array.join()) {
+      return _.shuffle(array);
+    } else {
+      return shuffled;
+    }
+  };
+
+
+  /* Arrays */
 
   _.first = function(array, n) {
     if (n != null) {
@@ -79,23 +141,6 @@
     return result;
   };
 
-  _.filter = function(collection, test) {
-    var results;
-    results = [];
-    _.each(collection, function(item) {
-      if (test(item)) {
-        return results.push(item);
-      }
-    });
-    return results;
-  };
-
-  _.reject = function(collection, test) {
-    return _.filter(collection, function(item) {
-      return !test(item);
-    });
-  };
-
   _.uniq = function(array) {
     var results;
     results = [];
@@ -107,76 +152,8 @@
     return results;
   };
 
-  _.map = function(collection, iterator) {
-    var results;
-    results = [];
-    _.each(collection, function(item) {
-      return results.push(iterator(item));
-    });
-    return results;
-  };
 
-  _.pluck = function(collection, key) {
-    return _.map(collection, function(item) {
-      return item[key];
-    });
-  };
-
-  _.reduce = function(collection, iterator, accumulator) {
-    if (accumulator == null) {
-      accumulator = collection.shift();
-    }
-    _.each(collection, function(item) {
-      return accumulator = iterator(accumulator, item);
-    });
-    return accumulator;
-  };
-
-  _.contains = function(collection, target) {
-    if (_.indexOf(collection, target) === -1) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  _.every = function(collection, iterator) {
-    iterator = iterator || _.identity;
-    return !!_.reduce(collection, function(accumulator, value) {
-      return accumulator && iterator(value);
-    }, true);
-  };
-
-  _.some = function(collection, iterator) {
-    iterator = iterator || _.identity;
-    return !_.every(collection, function(value) {
-      return !iterator(value);
-    });
-  };
-
-  _.extend = function(obj) {
-    var args;
-    args = Array.prototype.slice.call(arguments);
-    _.each(args, function(arg) {
-      return _.each(arg, function(item, key) {
-        return obj[key] = item;
-      });
-    });
-    return obj;
-  };
-
-  _.defaults = function(obj) {
-    var args;
-    args = Array.prototype.slice.call(arguments);
-    _.each(args, function(arg) {
-      return _.each(arg, function(item, key) {
-        if (obj[key] == null) {
-          return obj[key] = item;
-        }
-      });
-    });
-    return obj;
-  };
+  /* Functions */
 
   _.once = function(func) {
     var alreadyCalled, result;
@@ -212,24 +189,44 @@
     }, wait);
   };
 
-  _.shuffle = function(array) {
-    var ran, shuffled, used;
-    used = [];
-    while (used.length < array.length) {
-      ran = Math.floor(Math.random() * array.length);
-      if (!_.contains(used, ran)) {
-        used.push(ran);
-      }
-    }
-    shuffled = [];
-    _.each(used, function(item) {
-      return shuffled.push(array[item]);
+
+  /* Objects */
+
+  _.extend = function(obj) {
+    var args;
+    args = Array.prototype.slice.call(arguments);
+    _.each(args, function(arg) {
+      return _.each(arg, function(item, key) {
+        return obj[key] = item;
+      });
     });
-    if (shuffled.join() === array.join()) {
-      return _.shuffle(array);
-    } else {
-      return shuffled;
-    }
+    return obj;
   };
+
+  _.defaults = function(obj) {
+    var args;
+    args = Array.prototype.slice.call(arguments);
+    _.each(args, function(arg) {
+      return _.each(arg, function(item, key) {
+        if (obj[key] == null) {
+          return obj[key] = item;
+        }
+      });
+    });
+    return obj;
+  };
+
+
+  /* Cross Document */
+
+
+  /* Utility */
+
+  _.identity = function(val) {
+    return val;
+  };
+
+
+  /* Chaining */
 
 }).call(this);
